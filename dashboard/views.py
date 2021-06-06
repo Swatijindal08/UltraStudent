@@ -261,6 +261,41 @@ def wiki(request):
     return render(request,"dashboard/wiki.html",context)
 
 
+def conversion(request):
+    if request.method == "POST":
+        form = ConversionForm(request.POST)
+        if request.POST['measurement'] == 'length':
+            measurement_form = ConversionLengthForm()
+            context = {
+                'form':form,
+                'm_form':measurement_form,
+                'input':True
+            }
+            if 'input' in request.POST:
+                first = request.POST['measure1']
+                second = request.POST['measure2']
+                input = request.POST['input']
+                answer = ''
+                if input and int(input) >= 0:
+                    if first == 'yard' and second == 'foot':
+                        answer = f'{input} yard = {int(input)*3} foot'
+                    if first == 'foot' and second == 'foot':
+                        answer = f'{input} foot = {int(input)/3} yard'
+                context = {
+                    'form':form,
+                    'm_form':m_form
+                }
+
+    else:
+        form = ConversionForm()
+        context = {
+            'form':form,
+            'input':False
+        }
+    return render(request,"dashboard/conversion.html",context)
+
+
+
  
 
 
