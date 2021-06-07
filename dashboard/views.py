@@ -283,8 +283,34 @@ def conversion(request):
                         answer = f'{input} foot = {int(input)/3} yard'
                 context = {
                     'form':form,
-                    'm_form':m_form
+                    'm_form':measurement_form,
+                    'input':True,
+                    'answer':answer
                 }
+        if request.POST['measurement'] == 'mass':
+            measurement_form = ConversionMassForm()
+            context = {
+                'form':form,
+                'm_form':measurement_form,
+                'input':True
+            }
+            if 'input' in request.POST:
+                first = request.POST['measure1']
+                second = request.POST['measure2']
+                input = request.POST['input']
+                answer = ''
+                if input and int(input) >= 0:
+                    if first == 'pound' and second == 'kilogram':
+                        answer = f'{input} pound = {int(input)*0.453592} kilogram'
+                    if first == 'kilogram' and second == 'pound':
+                        answer = f'{input} kilogram = {int(input)/3} pound'
+                context = {
+                    'form':form,
+                    'm_form':measurement_form,
+                    'input':True,
+                    'answer':answer
+                }
+
 
     else:
         form = ConversionForm()
@@ -293,6 +319,26 @@ def conversion(request):
             'input':False
         }
     return render(request,"dashboard/conversion.html",context)
+
+
+def register(request):
+    if request.method == "POST":
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            messages.success(request,f"Account Created for {username} !!")
+            return redirect("login")
+            
+    else:
+        form = UserRegistrationForm()
+    context = {
+        'form':form
+    }
+    return render(request,"dashboard/register.html",context)
+
+def profile(request):
+    return render(request,"dashboard/profile.html")
 
 
 
